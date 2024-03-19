@@ -13,5 +13,14 @@ class User(db.Model, SerializerMixin):
   name = db.Column(db.String)
   username = db.Column(db.String)
 
-  def __repr__(self):
-    return f"<User {self.id}: {self.name}>"
+  pets = db.relationship("Pet", back_populates="user")
+
+class Pet(db.Model, SerializerMixin):
+  __tablename__ = "pets"
+
+  id = db.Column(db.Integer, primary_key=True)
+  name = db.Column(db.String)
+  cause = db.Column(db.String)
+  owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+  user = db.relationship('User', back_populates="pets")
