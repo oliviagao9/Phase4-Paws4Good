@@ -10,7 +10,7 @@ from flask_restful import Api, Resource
 from config import app, db, api
 
 # Add your model imports
-from models import User
+from models import User, Pet, Donation
 import os
 
 # Views go here!
@@ -31,7 +31,21 @@ class Users(Resource):
 
         return response
     
+class Pets(Resource):
+    def get(self):
+
+        response_dict_list = [n.to_dict() for n in Pet.query.all()]
+
+        response = make_response(
+            response_dict_list,
+            200,
+        )
+
+        return response
+    
+    
 api.add_resource(Users, '/users')
+api.add_resource(Pets, '/pets')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
