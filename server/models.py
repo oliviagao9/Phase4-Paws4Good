@@ -24,7 +24,7 @@ class Pet(db.Model, SerializerMixin):
   owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
   user = db.relationship('User', back_populates="pets")
-  donations = db.relationship("Donation")
+  donations = db.relationship("Donation", back_populates="pet", cascade='all, delete-orphan')
 
 class Donation(db.Model, SerializerMixin):
   __tablename__ = "donations"
@@ -33,4 +33,5 @@ class Donation(db.Model, SerializerMixin):
   amount = db.Column(db.Integer)
   pet_id = db.Column(db.Integer, db.ForeignKey('pets.id'))
   donator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+  pet = db.relationship("Pet", back_populates="donations")
 
