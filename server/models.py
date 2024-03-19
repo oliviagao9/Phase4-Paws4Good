@@ -24,3 +24,13 @@ class Pet(db.Model, SerializerMixin):
   owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
   user = db.relationship('User', back_populates="pets")
+  donations = db.relationship("Donation")
+
+class Donation(db.Model, SerializerMixin):
+  __tablename__ = "donations"
+
+  id = db.Column(db.Integer, primary_key=True)
+  amount = db.Column(db.Integer)
+  pet_id = db.Column(db.Integer, db.ForeignKey('pets.id'))
+  donator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
