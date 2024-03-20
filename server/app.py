@@ -19,6 +19,28 @@ import os
 def index():
     return '<h1>Project Server</h1>'
 
+class Signup(Resource):
+    def post(self):
+        body = request.get_json()
+
+        if User.query.filter_by(username=body['username']).first():
+            return make_response({"message", "Username already exists"}, 400)
+
+        try:
+            new_user = User(
+                name=body['name'],
+                username=body['username'],
+                _password_hash=''
+            ) 
+            
+            new_user.password_hash = body['password']
+            db.session.add(new_user)
+            db.session.commit()
+            return make_response(new_user.to_dict(), 201)
+        
+        except Exception as e:
+            db.session.rollback()
+            return make_response({"message", "Unable to create account."}, 400)
 
 class Users(Resource):
     def get(self):
@@ -122,6 +144,7 @@ api.add_resource(Pets, '/pets')
 api.add_resource(PetById, '/petbyid/<int:id>')
 api.add_resource(Donations, '/donations')
 api.add_resource(DonationById, '/donationbyid/<int:id>')
+api.add_resource(Signup, '/signup')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

@@ -2,8 +2,9 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import validates
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.ext.associationproxy import association_proxy
+from sqlalchemy.ext.hybrid import hybrid_property
 
-from config import db
+from config import db, bcrypt
 
 class User(db.Model, SerializerMixin):
   __tablename__ = "users"
@@ -11,7 +12,7 @@ class User(db.Model, SerializerMixin):
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String, nullable = False)
   username = db.Column(db.String, nullable = False)
-  password = db.Column(db.String, nullable = False)
+  _password_hash  = db.Column(db.String, nullable = False)
 
   #Relationships
   pets = db.relationship("Pet", back_populates="user", cascade='all, delete-orphan')
@@ -27,6 +28,18 @@ class User(db.Model, SerializerMixin):
       raise Exception('Username must be a string')
     return value
 
+  @hybrid_property
+  def password_hash(self):
+    return self._password_hash
+
+  @password_hash.setter
+  def password_hash(self, password):
+    password_hash  = bcrypt.generate_password_hash(password).decode('utf-8')
+    self._password_hash = password_hash 
+
+  def authenticate(self, password):
+      return bcrypt.check_password_hash(self._password_hash, password)
+  
   def __repr__(self):
     return f'<User {self.id} | {self.name}>'
 
@@ -34,7 +47,7 @@ class Pet(db.Model, SerializerMixin):
   __tablename__ = "pets"
 
   serialize_rules = ('-user.pets',)
-
+ 
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String, nullable = False)
   cause = db.Column(db.String, nullable = False)
