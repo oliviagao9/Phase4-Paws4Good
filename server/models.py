@@ -8,13 +8,18 @@ from config import db
 class User(db.Model, SerializerMixin):
   __tablename__ = "users"
 
-  serialize_rules = ('-pets.user',)
-
   id = db.Column(db.Integer, primary_key=True)
-  name = db.Column(db.String)
-  username = db.Column(db.String)
+  name = db.Column(db.String, nullable = False)
+  username = db.Column(db.String, nullable = False)
+  password = db.Column(db.String, nullable = False)
 
-  pets = db.relationship("Pet", back_populates="user")
+  #Relationships
+  pets = db.relationship("Pet", back_populates="user", cascade='all, delete-orphan')
+  donations = db.relationship("Donation", back_populates="donor", cascade='all, delete-orphan')
+
+  donated_pets = association_proxy('donations', 'pet')
+  #Serialization 
+  serialize_rules = ('-pets.user',)
   
   @validates('username')
   def validate_username(self, _, value):
@@ -31,10 +36,16 @@ class Pet(db.Model, SerializerMixin):
   serialize_rules = ('-user.pets',)
 
   id = db.Column(db.Integer, primary_key=True)
-  name = db.Column(db.String)
-  cause = db.Column(db.String)
-  owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+  name = db.Column(db.String, nullable = False)
+  cause = db.Column(db.String, nullable = False)
+  goal = db.Column(db.Integer,
+                   db.CheckConstraint('amount > 0'),
+                   nullable = False)
+  owner_id = db.Column(db.Integer, 
+                       db.ForeignKey('users.id'), 
+                       nullable = False)
 
+  #Relationships
   user = db.relationship('User', back_populates="pets")
   donations = db.relationship("Donation", back_populates="pet", cascade='all, delete-orphan')
 
@@ -44,13 +55,15 @@ class Pet(db.Model, SerializerMixin):
 class Donation(db.Model, SerializerMixin):
   __tablename__ = "donations"
 
-  serialize_only = ('id', 'amount', 'pet_id', 'donator_id')
+  serialize_only = ('id', 'amount', 'pet_id', 'donor_id')
 
   id = db.Column(db.Integer, primary_key=True)
   amount = db.Column(db.Integer, 
                      db.CheckConstraint('amount > 0'),
                      nullable = False)
-  pet_id = db.Column(db.Integer, db.ForeignKey('pets.id'))
-  donator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-  pet = db.relationship("Pet", back_populates="donations")
+  pet_id = db.Column(db.Integer, db.ForeignKey('pets.id'), nullable = False)
+  donor_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable = False)
 
+  #Relationships
+  pet = db.relationship("Pet", back_populates="donations")
+  donor = db.relationship("User", back_populates="donations")
