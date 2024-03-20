@@ -51,9 +51,29 @@ class Pets(Resource):
         except Exception:
             db.session.rollback()
             return make_response({"message": "Unable to create pet."}, 400)
+
+class PetById(Resource):
+    def get(self, id):
+        try:
+            target = db.session.get(Pet, id)
+            return make_response(target.to_dict(), 200)
+        except Exception:
+            return make_response({}, 404)
+    
+    def delete(self, id):
+        try:
+            target = db.session.get(Pet, id)
+            db.session.delete(target)
+            db.session.commit()
+            return make_response({}, 204)
+        
+        except Exception:
+            db.session.rollback()
+            return make_response({"message": "Unable to delete listing."}, 400)
     
 api.add_resource(Users, '/users')
 api.add_resource(Pets, '/pets')
+api.add_resource(PetById, '/petbyid/<int:id>')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
