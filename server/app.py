@@ -33,16 +33,24 @@ class Users(Resource):
     
 class Pets(Resource):
     def get(self):
+        try:
 
-        response_dict_list = [n.to_dict() for n in Pet.query.all()]
+            all_pets = [pet.to_dict() for pet in Pet.query.all()]
 
-        response = make_response(
-            response_dict_list,
-            200,
-        )
-
-        return response
-    
+            return make_response(all_pets, 200)
+        except Exception:
+            return make_response({"message": "Unable to fetch pets."}, 404)    
+        
+    def post(self):
+        try:
+            body = request.get_json()
+            new_pet = Pet(**body)
+            db.session.add(new_pet)
+            db.session.commit()
+            return make_response(new_pet.to_dict(), 201)
+        except Exception:
+            db.session.rollback()
+            return make_response({"message": "Unable to create pet."}, 400)
     
 api.add_resource(Users, '/users')
 api.add_resource(Pets, '/pets')
