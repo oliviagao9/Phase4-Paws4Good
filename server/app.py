@@ -3,7 +3,7 @@
 # Standard library imports
 
 # Remote library imports
-from flask import request, Flask, make_response
+from flask import request, Flask, make_response, session
 from flask_restful import Api, Resource
 
 # Local imports
@@ -11,9 +11,15 @@ from config import app, db, api
 
 # Add your model imports
 from models import User, Pet, Donation
+from dotenv import load_dotenv
 import os
 
 # Views go here!
+load_dotenv()
+app.secret_key = os.urandom(24)
+
+DATABASE_URI = os.getenv('DATABASE_URI')
+app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
 
 @app.route('/')
 def index():
@@ -41,6 +47,27 @@ class Signup(Resource):
         except Exception as e:
             db.session.rollback()
             return make_response({"message", "Unable to create account."}, 400)
+        
+class Login(Resource):
+    def post(self):
+        data = request.get_json()
+
+        username = data.get("username")
+        password = data.get("password")
+
+        user = User.query.filter(User.username == username).first()
+        if user:
+            if user.authenticate(password):
+                session['user_id'] = user.id
+                return make_response( {
+                    "id": user.id,
+                    "name": user.name,
+                    "username": user.username,
+                }, 200)
+            else:
+                return {"errors": ["Invalid password"]}, 401
+        else:
+            return {"errors": "Invalid username or password"}, 401
 
 class Users(Resource):
     def get(self):
@@ -145,6 +172,7 @@ api.add_resource(PetById, '/petbyid/<int:id>')
 api.add_resource(Donations, '/donations')
 api.add_resource(DonationById, '/donationbyid/<int:id>')
 api.add_resource(Signup, '/signup')
+api.add_resource(Login, '/login')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
