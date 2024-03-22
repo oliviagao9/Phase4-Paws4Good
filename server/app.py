@@ -30,7 +30,7 @@ class Signup(Resource):
         body = request.get_json()
 
         if User.query.filter_by(username=body['username']).first():
-            return make_response({"message", "Username already exists"}, 400)
+            return {"errors": "Username already exists"}, 400
 
         try:
             new_user = User(
@@ -42,11 +42,14 @@ class Signup(Resource):
             new_user.password_hash = body['password']
             db.session.add(new_user)
             db.session.commit()
+
+            session['user_id'] = new_user.id
+
             return make_response(new_user.to_dict(), 201)
         
         except Exception as e:
             db.session.rollback()
-            return make_response({"message", "Unable to create account."}, 400)
+            return {"errors": "Unable to create account."}, 400
         
 class Login(Resource):
     def post(self):
@@ -65,9 +68,17 @@ class Login(Resource):
                     "username": user.username,
                 }, 200)
             else:
-                return {"errors": ["Invalid password"]}, 401
+                return {"errors": "Invalid password"}, 401
         else:
             return {"errors": "Invalid username or password"}, 401
+
+class Logout(Resource):
+    def delete(self):
+        try:
+            session['user_id'] = None
+            return ({}, 204)
+        except:
+            return {"errors": "No user currently logged in"}, 401
 
 class Users(Resource):
     def get(self):
@@ -173,6 +184,7 @@ api.add_resource(Donations, '/donations')
 api.add_resource(DonationById, '/donationbyid/<int:id>')
 api.add_resource(Signup, '/signup')
 api.add_resource(Login, '/login')
+api.add_resource(Logout, '/logout')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
