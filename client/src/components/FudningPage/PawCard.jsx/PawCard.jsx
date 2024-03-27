@@ -4,7 +4,8 @@ import { ProgressBar } from 'react-bootstrap';
 
 const PawCard = ({petData}) => {
   const {name, cause, goal, image, age,  id, donations} = petData
-  
+  const donationRaised = donations.reduce((accum,donation) => {return accum + donation.amount},0)
+
   return (
     <Card>
       <ImageIcon>
@@ -14,11 +15,12 @@ const PawCard = ({petData}) => {
         <h4>Name: {name}</h4>
         <p><strong>Age: </strong> {age}</p>
         <p><strong>Cause: </strong> {cause}</p>
+        <p><strong>Raised: </strong> {donationRaised}</p>
         <p><strong>Target: </strong>{goal}</p>
         <ProgressBar 
           striped
           variant="info"
-          now={50} 
+          now={(donationRaised/goal) * 100} 
           style={{ width: "50%", margin: "auto" }}
         />    
       </CardContainer>
