@@ -1,9 +1,8 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import styled from 'styled-components'
-import { UserContext } from "../context/UserContext";
 
 const Login = ( {onLogin }) => {
   const navigate = useNavigate();
