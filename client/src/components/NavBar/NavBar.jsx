@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useContext }from 'react';
 import { Link } from "react-router-dom";
 import styled from 'styled-components'
 
-const NavBar = () => {
+const NavBar = ( { user,  handleLogout}) => {
 
   return (
     <Header>
@@ -11,18 +11,17 @@ const NavBar = () => {
           <p>Paws4Good</p>
         </Link>
       </Logo>
+      <HeadeerRight>
+        {!user ? (
+        <RightSideLink style={{ color: 'black' }}>
+          <Link to='/login'>Sign In</Link>
+        </RightSideLink>) : (null)}
+        {!user ? (
+        <LeftSideLink style={{ color: 'white' }}>
+          <Link to='/signup' >Get Started</Link> 
+        </LeftSideLink>) :  <LeftSideLink to='/' onClick={handleLogout} > Logout </LeftSideLink>}
 
-      <HeaderLeft>
-        <SingupLink style={{ color: 'black' }}>
-          <Link to='/login' className='nav-login-link'>Sign In</Link>
-
-        </SingupLink>
-
-        <LoginLink style={{ color: 'white' }}>
-          <Link to='/signup' className='nav-signup-link'>Get Started</Link> 
-        </LoginLink>
-      </HeaderLeft>
-
+      </HeadeerRight>
     </Header>
   )
 }
@@ -54,7 +53,7 @@ const Logo = styled.div`
     text-decoration: none;
   }
 `
-const HeaderLeft = styled.div`
+const HeadeerRight = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -62,7 +61,7 @@ const HeaderLeft = styled.div`
   width: 40%;
 `
 
-const SingupLink = styled.div`
+const RightSideLink = styled.div`
   font: 16px sans-serif;
   color: white;
   padding-right: 20px;
@@ -73,7 +72,7 @@ const SingupLink = styled.div`
   }
 `
 
-const LoginLink = styled.div`
+const LeftSideLink = styled.div`
   font: 14px sans-serif;
   color: white;
   padding: 12px 15px;
