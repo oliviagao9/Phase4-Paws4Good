@@ -46,7 +46,7 @@ class User(db.Model, SerializerMixin):
 class Pet(db.Model, SerializerMixin):
   __tablename__ = "pets"
 
-  serialize_rules = ('-user.pets',)
+  serialize_rules = ('-user.pets', '-user._password_hash',)
  
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String, nullable = False)
