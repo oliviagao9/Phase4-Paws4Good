@@ -4,7 +4,7 @@ import { useFormik } from 'formik'
 import * as yup from 'yup'
 import styled from 'styled-components'
 
-function Signup({ onLogin, setIsLoggedIn, setUserId }) {
+function Signup({ onLogin }) {
   const navigate = useNavigate();
   const [errors, setErrors] = useState([]);
 
@@ -35,8 +35,6 @@ function Signup({ onLogin, setIsLoggedIn, setUserId }) {
           if (r.ok) {
             r.json().then(user => {
               onLogin(user);
-              setIsLoggedIn(true);
-              setUserId(user.id);
               navigate("/");
             })
           } else {
