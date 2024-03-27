@@ -11,19 +11,22 @@ from config import app, db, api
 
 # Add your model imports
 from models import User, Pet, Donation
-from dotenv import load_dotenv
-import os
 
 # Views go here!
-load_dotenv()
-app.secret_key = os.urandom(24)
 
-DATABASE_URI = os.getenv('DATABASE_URI')
-app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
-
-@app.route('/')
-def index():
-    return '<h1>Project Server</h1>'
+class Auth(Resource):
+    def get(self):
+        try:
+            print('checking session')
+            print(session['user_id'])
+            user_id = session.get('user_id')
+            user = User.query.filter_by(id=user_id).first()
+            return make_response({
+                'user_id': user.id,
+                'name': user.name,
+                'username': user.username}, 200)
+        except:
+            return('Unauthorized', 401)
 
 class Signup(Resource):
     def post(self):
@@ -45,7 +48,10 @@ class Signup(Resource):
 
             session['user_id'] = new_user.id
 
-            return make_response(new_user.to_dict(), 201)
+            return make_response({
+                'user_id': new_user.id,
+                'name': new_user.name,
+                'username': new_user.username}, 201)
         
         except Exception as e:
             db.session.rollback()
@@ -63,7 +69,7 @@ class Login(Resource):
             if user.authenticate(password):
                 session['user_id'] = user.id
                 return make_response( {
-                    "id": user.id,
+                    "user_id": user.id,
                     "name": user.name,
                     "username": user.username,
                 }, 200)
@@ -177,14 +183,15 @@ class DonationById(Resource):
             db.session.rollback()
             return make_response({"message": "Unable to delete donation."}, 400)
     
-api.add_resource(Users, '/users')
-api.add_resource(Pets, '/pets')
-api.add_resource(PetById, '/petbyid/<int:id>')
-api.add_resource(Donations, '/donations')
-api.add_resource(DonationById, '/donationbyid/<int:id>')
-api.add_resource(Signup, '/signup')
-api.add_resource(Login, '/login')
-api.add_resource(Logout, '/logout')
+api.add_resource(Users, '/api/users')
+api.add_resource(Pets, '/api/pets')
+api.add_resource(PetById, '/api/petbyid/<int:id>')
+api.add_resource(Donations, '/api/donations')
+api.add_resource(DonationById, '/api/donationbyid/<int:id>')
+api.add_resource(Signup, '/api/signup')
+api.add_resource(Login, '/api/login')
+api.add_resource(Logout, '/api/logout')
+api.add_resource(Auth, '/api/auth')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

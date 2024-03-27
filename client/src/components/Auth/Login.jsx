@@ -1,16 +1,18 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import styled from 'styled-components'
+import { UserContext } from "../context/UserContext";
 
-function Login({ onLogin, setIsLoggedIn, setUserId  }) {
+const Login = ( {onLogin }) => {
   const navigate = useNavigate();
   const [errors, setErrors] = useState([]);
 
+
   const formSchema = yup.object().shape({
     username: yup.string().required()
-})
+  })
 
 const formik = useFormik({
 
@@ -21,31 +23,29 @@ const formik = useFormik({
 
     validationSchema: formSchema,
 
-    onSubmit: (values) => {
-      fetch("http://localhost:5555/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      })
-      .then(r => {
-        if (r.ok) {
-          r.json().then(user => {
-            onLogin(user);
-            setIsLoggedIn(true);
-            setUserId(user.id);
-            navigate("/");
-          })
-        } else {
-          r.json().then(data => {
-            alert(data.errors);
-            setErrors(data.errors);
-          })
+    onSubmit: async (values) => {
+      try {
+        const response = await fetch("/api/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values),
+        });
+
+        const data = await response.json();
+        
+        if (data.errors) {
+          alert (data.errors);
+          return setErrors(data.errors);
         }
-      })
-    },
-  })
+        onLogin(data)
+        navigate("/fundingpage");
+      } catch (error) {
+        console.log(error);
+      }
+  }
+});
 
   return (
     <Form onSubmit={formik.handleSubmit}>
