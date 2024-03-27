@@ -50,6 +50,8 @@ class Pet(db.Model, SerializerMixin):
  
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String, nullable = False)
+  age = db.Column (db.Integer, nullable = False)
+  image = db.Column (db.String, nullable = False)
   cause = db.Column(db.String, nullable = False)
   goal = db.Column(db.Integer,
                    db.CheckConstraint('amount > 0'),
