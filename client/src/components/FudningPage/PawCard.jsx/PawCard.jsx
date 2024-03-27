@@ -1,5 +1,6 @@
 import {useState} from 'react';
 import styled from 'styled-components'
+import { ProgressBar } from 'react-bootstrap';
 
 const PawCard = ({petData}) => {
   const {name, cause, goal, image, age,  id, donations} = petData
@@ -14,6 +15,12 @@ const PawCard = ({petData}) => {
         <p><strong>Age: </strong> {age}</p>
         <p><strong>Cause: </strong> {cause}</p>
         <p><strong>Target: </strong>{goal}</p>
+        <ProgressBar 
+          striped
+          variant="info"
+          now={50} 
+          style={{ width: "50%", margin: "auto" }}
+        />    
       </CardContainer>
     </Card>
   );
