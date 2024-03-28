@@ -1,13 +1,20 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation} from "react-router-dom";
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import styled from 'styled-components'
 
-const Login = ( {onLogin }) => {
+const Login = ( {onLogin, user}) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [errors, setErrors] = useState([]);
 
+
+  useEffect(() => {
+    if (user) {
+      navigate("/fundingpage")
+    }
+  }, [user, location])
 
   const formSchema = yup.object().shape({
     username: yup.string().required()
