@@ -7,9 +7,12 @@ const NavBar = ( { user,  handleLogout}) => {
   return (
     <Header>
       <Logo>
-        <Link to ='/' style={{ color: 'black' }}>
+        {!user? (<Link to ='/' style={{ color: 'black' }}>
           <p>Paws4Good</p>
-        </Link>
+        </Link>) : (
+        <Link to ='/fundingpage' style={{ color: 'black' }}>
+          <p>Paws4Good</p>
+        </Link>)}
       </Logo>
       <HeadeerRight>
         {!user ? (
