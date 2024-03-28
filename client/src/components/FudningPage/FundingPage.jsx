@@ -16,7 +16,7 @@ const FundingPage = ({user}) => {
       <div className="header">
         <h1>Fur-ever Love: Fundraising for Pets in Need</h1>
       </div>
-      <PawListContainer pets = {pets}/>
+      <PawListContainer pets = {pets} user = { user }/>
     </div>
   )
 }

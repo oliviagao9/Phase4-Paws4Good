@@ -2,11 +2,10 @@ import React from 'react';
 import styled from 'styled-components'
 import PawCard from '../PawCard.jsx/PawCard';
 
-const PawListContainer = ({pets}) => {
-  console.log(pets);
+const PawListContainer = ( {pets, user} ) => {
   return (
     <CardContainers>
-      {pets.map(petObj => <PawCard key={petObj.id} petData = {petObj} />)}
+      {pets.map(petObj => <PawCard key={petObj.id} petData = {petObj} user = {user}/>)}
     </CardContainers>
   )
 }

@@ -2,10 +2,11 @@ import {useState} from 'react';
 import styled from 'styled-components'
 import { ProgressBar } from 'react-bootstrap';
 
-const PawCard = ({petData}) => {
+const PawCard = ({petData , user}) => {
+
   const {name, cause, goal, image, age,  id, donations} = petData
   const donationRaised = donations.reduce((accum,donation) => {return accum + donation.amount},0)
-
+  console.log(user)
   return (
     <Card>
       <ImageIcon>
