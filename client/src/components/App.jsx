@@ -32,7 +32,6 @@ function App() {
       } 
     })
   }
-  console.log(user)
 
   const handleLogout = () => {
     fetch('/api/logout', {

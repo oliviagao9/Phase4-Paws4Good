@@ -73,6 +73,7 @@ const RightSideLink = styled.div`
     color:black;
     text-decoration: none;
   }
+  cursor: pointer;
 `
 
 const LeftSideLink = styled.div`
@@ -86,4 +87,5 @@ const LeftSideLink = styled.div`
     color:white;
     text-decoration: none;
   }
+  cursor: pointer;
 `

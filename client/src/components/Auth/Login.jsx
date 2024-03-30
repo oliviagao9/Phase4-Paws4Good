@@ -80,18 +80,15 @@ const Form = styled.form`
   font-size:20px;
   input[type=text]{
     margin-bottom: 10px;
-    padding-bottom: 1px;
     font-size: 100%;
     font-family: arial;
   }
   input[type=password]{
     margin-bottom: 10px;
-    padding-bottom: 10px;
   }
   input[type=submit]{
     background-color:pink;
     color: black;
-    height:40px;
     font-family:Arial;
     font-size:30px;
     margin-top:10px;
