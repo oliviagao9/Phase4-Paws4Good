@@ -1,0 +1,39 @@
+.cardContainers {
+  list-style: none;
+  margin-top: 20px;
+}
+
+.card {
+  margin: 1rem;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+  width: 25%;
+  background-color: white;
+}
+
+.image-icon {
+  margin: auto;
+  width: 50%;
+  padding: 10px;
+}
+
+.card hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+
+.imageIcon {
+  padding: 15px;
+}
+
+.donateBtn{
+  padding: 3px 20px;
+} 
+
+button {
+  padding: 0.25rem 1rem;
+  font-family: inherit;
+  border: none;
+  cursor: pointer;
+  margin: 1rem;
+}

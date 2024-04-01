@@ -1,0 +1,12 @@
+.homePage {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f4ede4;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.homePage img {
+  margin-top: 30px;
+}

@@ -1,18 +1,12 @@
-import React from 'react';
-import styled from 'styled-components'
 import PawCard from '../PawCard.jsx/PawCard';
+import '../FundingPage.css'
 
 const PawListContainer = ( {pets, user} ) => {
   return (
-    <CardContainers>
+    <div className ="cardContainers">
       {pets.map(petObj => <PawCard key={petObj.id} petData = {petObj} user = {user}/>)}
-    </CardContainers>
+    </div>
   )
 }
 
 export default PawListContainer;
-
-const CardContainers = styled.div`
-  list-style: none;
-  margin-top: 20px;
-`;

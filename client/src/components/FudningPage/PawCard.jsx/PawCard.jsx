@@ -1,6 +1,6 @@
 import {useState} from 'react';
-import styled from 'styled-components'
 import { ProgressBar } from 'react-bootstrap';
+import '../FundingPage.css'
 
 const PawCard = ({petData , user}) => {
 
@@ -45,11 +45,11 @@ const PawCard = ({petData , user}) => {
   }
 
   return (
-    <Card>
-      <ImageIcon>
-        <img src={image} alt={name}/>
-      </ImageIcon>
-      <CardContainer>
+    <div className = "card">
+      <div className= "image-icon">
+      <img src={image} alt={name}/>
+      </div>
+      <div className = "cardContainer">
         <h4>Name: {name}</h4>
         <p><strong>Age: </strong> {age}</p>
         <p><strong>Cause: </strong> {cause}</p>
@@ -74,38 +74,12 @@ const PawCard = ({petData , user}) => {
         <button>Donate</button>
         </form>) :null
       }
-      <div className="footer">
+      <div style={{ padding: "15px" }}>
       {!toggle? (<button onClick = {handleToggle} className="button">Donate Now</button>):<button onClick = {handleToggle} lassName="button">Close Donation Form</button>}
       </div>
-      </CardContainer>
-    </Card>
+      </div>
+    </div>
   );
 };
 
 export default PawCard; 
-
-const Card = styled.div`
-  margin: 1rem;
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-  transition: 0.3s;
-  width: 25%;
-  background-color: white;
-  &img {
-    width:  100px;
-    height: 100px;
-    text-align:center;
-    background-position:center;
-    background-size: cover;
-  }
-  & hoever {
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-  }
-`;
-
-const ImageIcon = styled.div`
-  padding: 15px;
-`
-
-const CardContainer = styled.div`
-  padding: 3px 20px;
-`

@@ -2,9 +2,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from 'formik'
 import * as yup from 'yup'
-import styled from 'styled-components'
+import "./Form.css";
 
-function Signup({ onLogin }) {
+const Signup = ({ onLogin }) => {
   const navigate = useNavigate();
   const [errors, setErrors] = useState([]);
 
@@ -24,21 +24,21 @@ function Signup({ onLogin }) {
       validationSchema: formSchema,
 
       onSubmit: (values) => {
-        fetch("http://localhost:5555/signup", {
+        fetch("/api/signup", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(values),
         })
-        .then(r => {
-          if (r.ok) {
-            r.json().then(user => {
+        .then(response => {
+          if (response.ok) {
+            response.json().then(user => {
               onLogin(user);
-              navigate("/");
+              navigate("/fundingpage");
             })
           } else {
-            r.json().then(data => {
+            response.json().then(data => {
               alert(data.errors);
               setErrors(data.errors);
             })
@@ -48,7 +48,7 @@ function Signup({ onLogin }) {
     })
 
   return (
-    <Form onSubmit={formik.handleSubmit}>
+    <form className= "formStyling" onSubmit={formik.handleSubmit}>
     {errors&& <h3 style={{color:'red', textAlign: 'center'}}>{errors}</h3>}
     <label>
         Name
@@ -63,37 +63,8 @@ function Signup({ onLogin }) {
     </label>
     <input type='password' name='password' value={formik.values.password} onChange={formik.handleChange} />
     <input type='submit' value={'Signup'} />
-    </Form>
+    </form>
   );
 }
 
 export default Signup;
-
-const Form = styled.form`
-  display: flex;
-  flex-direction:column;
-  width: 300px;
-  margin:auto;
-  font-family:arial;
-  font-size:20px;
-  input[type=text]{
-    margin-bottom: 10px;
-    font-size: 100%;
-    font-family: arial;
-  }
-  input[type=password]{
-    margin-bottom: 10px;
-  }
-  input[type=submit]{
-    background-color:pink;
-    color: black;
-    font-family:Arial;
-    font-size:30px;
-    margin-top:10px;
-    margin-bottom:10px;
-    cursor: pointer;
-    &:hover {
-      opacity: 0.9;
-    }
-  }
-`;

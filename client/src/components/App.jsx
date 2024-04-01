@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import LandingPage from "./LandingPage/LandingPage";
 import NavBar from "./NavBar/NavBar";
-import { createGlobalStyle, styled } from 'styled-components'
 import Login from "./Auth/Login";
 import Signup from "./Auth/Signup";
 import FundingPage from "./FudningPage/FundingPage";
@@ -50,49 +49,40 @@ function App() {
   };
 
   return (
-    <div>
-      <GlobalStyle />
-        <NavBar path ={['/', '/signup', '/login']} 
-        user = {user}
-        handleLogout={handleLogout} />     
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route
-          path="/login"
-          element={
-            <Login
+    <div style={{ backgroundColor: "#f4ede4"}}>
+      <NavBar path ={['/', '/signup', '/login']} 
+      user = {user}
+      handleLogout={handleLogout} />     
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route
+        path="/login"
+        element={
+          <Login
+          onLogin={onLogin}
+          user = {user}
+          />
+        }
+        />
+        <Route
+        path="/signup"
+        element={
+          <Signup
             onLogin={onLogin}
-            user = {user}
-            />
-          }
+            setErrors={setErrors}
           />
+        }
+        />
+        <Route element = {<ProtectedRoute user = {user}/> }>
           <Route
-          path="/signup"
-          element={
-            <Signup
-              onLogin={onLogin}
-              setErrors={setErrors}
-            />
-          }
+              path="/fundingpage"
+              element={
+                <FundingPage user={user} />}
           />
-          <Route element = {<ProtectedRoute user = {user}/> }>
-            <Route
-                path="/fundingpage"
-                element={
-                  <FundingPage user={user} />}
-            />
-          </Route>
-
-        </Routes>
+        </Route>
+      </Routes>
     </div>
-
   );
 }
 
 export default App;
-
-const GlobalStyle = createGlobalStyle`
-    body{
-      background-color: #f4ede4; 
-    }
-    ` 
