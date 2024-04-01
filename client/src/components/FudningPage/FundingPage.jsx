@@ -1,15 +1,6 @@
-import { useEffect, useState } from "react";
 import PawListContainer from "./PawListContainer.jsx/PawListContainer";
 
-const FundingPage = ({user}) => {
-
-  const [pets, setPets] = useState([])
-
-  useEffect(() => {
-    fetch('/api/pets')
-      .then(r => r.json())
-      .then(petData => setPets(petData))
-  }, [])
+const FundingPage = ({user, pets}) => {
 
   return (
     <div style={{textAlign:"center",
