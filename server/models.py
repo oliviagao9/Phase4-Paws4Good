@@ -11,7 +11,7 @@ class User(db.Model, SerializerMixin):
 
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String, nullable = False)
-  username = db.Column(db.String, nullable = False)
+  username = db.Column(db.String, nullable = False, unique=True)
   _password_hash  = db.Column(db.String, nullable = False)
 
   #Relationships
@@ -24,7 +24,7 @@ class User(db.Model, SerializerMixin):
   
   @validates('username')
   def validate_username(self, _, value):
-    if not isinstance(value, str) or len(value) < 1:
+    if not isinstance(value, str) or len(value) < 1 or len(value) > 15:
       raise Exception('Username must be a string')
     return value
 
@@ -64,6 +64,12 @@ class Pet(db.Model, SerializerMixin):
   user = db.relationship('User', back_populates="pets")
   donations = db.relationship("Donation", back_populates="pet", cascade='all, delete-orphan')
 
+  @validates('owner_id')
+  def validate_owner_id(self, _, value):
+    if not User.query.filte_by(id = value):
+      raise Exception('That user does not exist.')
+    return value
+
   def __repr__(self):
     return f'<Pet {self.id} | {self.name}>'
   
@@ -82,3 +88,15 @@ class Donation(db.Model, SerializerMixin):
   #Relationships
   pet = db.relationship("Pet", back_populates="donations")
   donor = db.relationship("User", back_populates="donations")
+
+  @validates('pet_id')
+  def validate_owner_id(self, _, value):
+    if not Pet.query.filte_by(id = value):
+      raise Exception('That pet does not exist.')
+    return value
+  
+  @validates('donor_id')
+  def validate_owner_id(self, _, value):
+    if not User.query.filte_by(id = value):
+      raise Exception('That donor does not exist.')
+    return value
