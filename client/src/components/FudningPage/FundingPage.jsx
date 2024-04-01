@@ -13,7 +13,7 @@ const FundingPage = ({user}) => {
 
   return (
     <div style={{textAlign:"center"}}>
-      <h1>Fur-ever Love: Fundraising for Pets in Need</h1>
+      <h1>Fur-ever Love: Fundraising for Paws in Need</h1>
       <PawListContainer pets = {pets} user = { user }/>
     </div>
   )
