@@ -9,8 +9,9 @@ const Signup = ({ onLogin }) => {
   const [errors, setErrors] = useState([]);
 
   const formSchema = yup.object().shape({
-    name: yup.string().required(),
-    username: yup.string().required()
+    name: yup.string().required().max(20),
+    username: yup.string().required().max(15),
+    password: yup.string().required()
   })
 
   const formik = useFormik({

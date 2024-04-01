@@ -16,7 +16,8 @@ const Login = ( {onLogin, user}) => {
   }, [user, location])
 
   const formSchema = yup.object().shape({
-    username: yup.string().required()
+    username: yup.string().required(),
+    password: yup.string().required()
   })
 
   const formik = useFormik({
