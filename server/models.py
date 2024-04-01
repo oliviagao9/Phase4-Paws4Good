@@ -66,7 +66,7 @@ class Pet(db.Model, SerializerMixin):
 
   @validates('owner_id')
   def validate_owner_id(self, _, value):
-    if not User.query.filte_by(id = value):
+    if not User.query.filter_by(id = value):
       raise Exception('That user does not exist.')
     return value
 
@@ -91,12 +91,12 @@ class Donation(db.Model, SerializerMixin):
 
   @validates('pet_id')
   def validate_owner_id(self, _, value):
-    if not Pet.query.filte_by(id = value):
+    if not Pet.query.filter_by(id = value):
       raise Exception('That pet does not exist.')
     return value
   
   @validates('donor_id')
   def validate_owner_id(self, _, value):
-    if not User.query.filte_by(id = value):
+    if not User.query.filter_by(id = value):
       raise Exception('That donor does not exist.')
     return value
