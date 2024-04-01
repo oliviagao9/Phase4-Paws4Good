@@ -1,10 +1,12 @@
 import {useState} from 'react';
+import { useFormik } from 'formik'
+import * as yup from 'yup'
 import { ProgressBar } from 'react-bootstrap';
 import '../FundingPage.css'
 
 const PawCard = ({petData , user}) => {
 
-  const [amount, setAmount] = useState(0);
+  const [errors, setErrors] = useState([]);
   const [toggle, setToggle] = useState(false);
   const {name, cause, goal, image, age,  id, donations} = petData
   const donationRaised = donations.reduce((accum,donation) => {return accum + donation.amount},0)
@@ -15,34 +17,38 @@ const PawCard = ({petData , user}) => {
     setToggle(!toggle);
   }
 
-  const handleDonation = (e) => {
-    e.preventDefault();
+  const formSchema = yup.object().shape({
+    amount: yup.number().required().positive().integer() 
+  })
 
-    const donationData = {
-        amount: amount,
-        pet_id: id,
-        donor_id: user.user_id
-    }
+  const formik = useFormik({
 
-    return fetch("/api/donations", {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(donationData)
-    })
-    .then( r=> r.json())
-    .then(updatedDonation => {
-      console.log(updatedDonation);
-      console.log(newTotalFund);
-      setNewTotalFund(newTotalFund +updatedDonation.amount)
-      setAmount(0)
-      setToggle(!toggle)
-      console.log(newTotalFund);
+    initialValues: {
+      amount:'',
+      pet_id: id,
+      donor_id: user.user_id
+    },
+
+    validationSchema: formSchema,
+
+    onSubmit: (values) => {
+      fetch("/api/donations", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(values)
+      })
+      .then( r=> r.json())
+      .then(donation => {
+        console.log(donation)
+        setNewTotalFund(newTotalFund +donation.amount)
+        setToggle(!toggle)
+      }
+      )
     }
-    )
-  }
+  })
 
   return (
     <div className = "card">
@@ -61,21 +67,23 @@ const PawCard = ({petData , user}) => {
           now={(newTotalFund/goal) * 100} 
           style={{ width: "50%", margin: "auto" }}
         />
-        {toggle?( 
-        <form on onSubmit={handleDonation}> 
-          <input             
-            type="number"
-            name="amount"
-            min="0"
-            placeholder="Amount"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}>
-          </input>
-        <button>Donate</button>
-        </form>) :null
+        { toggle ?( 
+          <>
+            <p style={{color:'red'}}> {formik.errors.amount}</p>
+            <form onSubmit={formik.handleSubmit}> 
+              <input             
+                type="number"
+                name="amount"
+                placeholder="Amount"
+                value={formik.values.amount}
+                onChange={formik.handleChange}/>
+            <button type="submit">Donate</button>
+            </form>
+          </>)
+        : null
       }
       <div style={{ padding: "15px" }}>
-      {!toggle? (<button onClick = {handleToggle} className="button">Donate Now</button>):<button onClick = {handleToggle} lassName="button">Close Donation Form</button>}
+      {!toggle? (<button onClick = {handleToggle} className="button">Donate Now</button>):<button onClick = {handleToggle} className="button">Close Donation Form</button>}
       </div>
       </div>
     </div>
