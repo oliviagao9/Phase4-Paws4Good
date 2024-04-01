@@ -1,4 +1,4 @@
-.cardContainers {
+.cards {
   list-style: none;
   margin-top: 20px;
 }
@@ -13,8 +13,8 @@
 
 .image-icon {
   margin: auto;
-  width: 50%;
-  padding: 10px;
+  padding-bottom: 10px;
+  padding-top: 10px;
 }
 
 .card hover {
@@ -36,4 +36,28 @@ button {
   border: none;
   cursor: pointer;
   margin: 1rem;
+}
+
+@media (min-width: 768px) {
+  .cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+  }
+
+  .card {
+    width: calc(33% - 2rem);
+  }
+}
+
+@media (min-width: 1024px) {
+  .card {
+    width: calc(33% - 2rem);
+  }
+}
+
+@media (min-width: 1200px) {
+  .card {
+    width: calc(20% - 2rem);
+  }
 }

@@ -3,7 +3,7 @@ import '../FundingPage.css'
 
 const PawListContainer = ( {pets, user} ) => {
   return (
-    <div className ="cardContainers">
+    <div className ="cards">
       {pets.map(petObj => <PawCard key={petObj.id} petData = {petObj} user = {user}/>)}
     </div>
   )
