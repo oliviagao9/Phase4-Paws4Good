@@ -7,6 +7,7 @@ import Signup from "./Auth/Signup";
 import FundingPage from "./FudningPage/FundingPage";
 import { useNavigate } from "react-router-dom";
 import { ProtectedRoute } from "./ProtectedRoute";
+import EditProfile from "./Auth/EditProfile";
 
 function App() {
 
@@ -69,7 +70,6 @@ function App() {
         element={
           <Signup
             onLogin={onLogin}
-            setErrors={setErrors}
           />
         }
         />
@@ -78,6 +78,15 @@ function App() {
               path="/fundingpage"
               element={
                 <FundingPage user={user} />}
+          />
+          <Route
+          path="/editprofile"
+          element={
+            <EditProfile
+            user = {user}
+            setUser={setUser}
+            />
+          }
           />
         </Route>
       </Routes>

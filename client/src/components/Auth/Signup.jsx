@@ -49,20 +49,22 @@ const Signup = ({ onLogin }) => {
 
   return (
     <form className= "formStyling" onSubmit={formik.handleSubmit}>
-    {errors&& <h3 style={{color:'red', textAlign: 'center'}}>{errors}</h3>}
-    <label>
-        Name
-    </label>
-    <input type='text' name='name' value={formik.values.name} onChange={formik.handleChange} />
-    <label>
-        Username
-    </label>
-    <input type='text' name='username' value={formik.values.username} onChange={formik.handleChange} />
-    <label>
-        Password
-    </label>
-    <input type='password' name='password' value={formik.values.password} onChange={formik.handleChange} />
-    <input type='submit' value={'Signup'} />
+      {errors&& <h3 style={{color:'red', textAlign: 'center'}}>{errors}</h3>}
+      <label>
+          Name
+      </label>
+      <p style={{color:'red'}}> {formik.errors.name}</p>
+      <input type='text' name='name' value={formik.values.name} onChange={formik.handleChange} />
+      <label>
+          Username
+      </label>
+      <p style={{color:'red'}}> {formik.errors.username}</p>
+      <input type='text' name='username' value={formik.values.username} onChange={formik.handleChange} />
+      <label>
+          Password
+      </label>
+      <input type='password' name='password' value={formik.values.password} onChange={formik.handleChange} />
+      <input type='submit' value={'Signup'} />
     </form>
   );
 }

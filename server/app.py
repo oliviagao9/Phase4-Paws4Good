@@ -96,7 +96,55 @@ class Users(Resource):
         )
 
         return response
+
+class UserByID(Resource):
+    def get(self, id):
+        user = User.query.filter_by(id=id).first()
+        if user:
+            return make_response(user.to_dict(), 200)
+
+        return make_response("User not found", 404)
+
+    def patch(self, id):
+        user = User.query.filter_by(id=id).first()
+
+        if user:
+            try:
+                body = request.get_json()
+
+                if User.query.filter_by(username=body['username']).first():
+                    return {"errors": "Username already exists"}, 400
+                
+                for attr in body:
+                    if attr == 'password':
+                        user.password_hash = body['password']
+                    else:
+                        setattr(user,attr,body[attr])
+
+                db.session.add(user)
+                db.session.commit()
+                return make_response({
+                    "user_id": user.id,
+                    "name": user.name,
+                    "username": user.username},202)
+            except:
+                return make_response({"errors": "Failed to update user"},400)
+            
+        return make_response({"errors":"User not found"}, 404)
     
+    def delete(self, id):
+        user = User.query.filter_by(id=id).first()
+        if user:
+            try:
+                db.session.delete(user)
+                db.session.commit()
+                session['user_id'] = None
+                return make_response({"message":"Successful deleted user"}, 204)
+            except:
+                return make_response({"errors": "Failed to delete user"},400)
+            
+        return make_response({"errors": "User not found"}, 404)
+        
 class Pets(Resource):
     def get(self):
         try:
@@ -106,7 +154,7 @@ class Pets(Resource):
             return make_response(all_pets, 200)
         
         except Exception:
-            return make_response({"message": "Unable to fetch pets."}, 404)    
+            return make_response({"errors": "Unable to fetch pets."}, 404)    
         
     def post(self):
         try:
@@ -118,7 +166,7 @@ class Pets(Resource):
         
         except Exception:
             db.session.rollback()
-            return make_response({"message": "Unable to create pet."}, 400)
+            return make_response({"errors": "Unable to create pet."}, 400)
 
 class PetById(Resource):
     def get(self, id):
@@ -138,7 +186,7 @@ class PetById(Resource):
         
         except Exception:
             db.session.rollback()
-            return make_response({"message": "Unable to delete listing."}, 400)
+            return make_response({"errors": "Unable to delete listing."}, 400)
 
 class Donations(Resource):
     def get(self):
@@ -149,7 +197,7 @@ class Donations(Resource):
             return make_response(all_donations, 200)
         
         except Exception:
-            return make_response({"message": "Unable to fetch pets."}, 404)    
+            return make_response({"errors": "Unable to fetch pets."}, 404)    
         
     def post(self):
         try:
@@ -161,7 +209,7 @@ class Donations(Resource):
         
         except Exception:
             db.session.rollback()
-            return make_response({"message": "Unable to create donation."}, 400)
+            return make_response({"errors": "Unable to create donation."}, 400)
 
 class DonationById(Resource):
     def get(self, id):
@@ -181,7 +229,7 @@ class DonationById(Resource):
         
         except Exception:
             db.session.rollback()
-            return make_response({"message": "Unable to delete donation."}, 400)
+            return make_response({"errors": "Unable to delete donation."}, 400)
     
 api.add_resource(Users, '/api/users')
 api.add_resource(Pets, '/api/pets')
@@ -192,6 +240,7 @@ api.add_resource(Signup, '/api/signup')
 api.add_resource(Login, '/api/login')
 api.add_resource(Logout, '/api/logout')
 api.add_resource(Auth, '/api/auth')
+api.add_resource(UserByID, "/api/users/<int:id>")
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

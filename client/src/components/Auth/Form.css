@@ -31,3 +31,24 @@ input[type=submit]{
     opacity: 0.9;
   }
 }
+
+.delete_button {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  width: 300px;
+  margin: auto;
+  background-color:#eee1cd;
+  border: none;
+  color: black;
+  font-family:Arial;
+  font-size:24px;
+  margin-top:10px;
+  margin-bottom:10px;
+  border-radius: 4px;
+  cursor: pointer;
+  align-items: center;
+  &:hover {
+    opacity: 0.9;
+  }
+}
