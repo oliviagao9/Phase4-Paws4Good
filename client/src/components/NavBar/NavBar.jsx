@@ -6,19 +6,16 @@ const NavBar = ( { user,  handleLogout}) => {
   return (
     <div className= "header">
       <div className= "headerLeft">
-        {!user? (<Link to ='/' style={{ color: 'black' }}>
+        <Link to ='/' style={{ color: 'black' }}>
           <p>Paws4Good</p>
-        </Link>) : (
-        <Link to ='/fundingpage' style={{ color: 'black' }}>
-          <p>Paws4Good</p>
-        </Link>)}
+        </Link>
       </div>
       <div className="headerRight">
         {!user ? (
         <div className="leftSideLink" style={{ color: 'black' }}>
           <Link to='/login'>Sign In</Link>
         </div>) : <div className="leftSideLink" style={{ color: 'black' }}>
-          <Link to='/pet'> Add Pet</Link>
+          <Link to='/editprofile'> Edit Profile</Link>
         </div>}
         {!user ? (
         <div className="rightSideLink" style={{ color: 'white' }}>
