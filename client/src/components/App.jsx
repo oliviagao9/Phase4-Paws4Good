@@ -8,12 +8,13 @@ import FundingPage from "./FudningPage/FundingPage";
 import { useNavigate } from "react-router-dom";
 import { ProtectedRoute } from "./ProtectedRoute";
 import EditProfile from "./Auth/EditProfile";
+import AddPaw from "./FudningPage/AddPaw";
 
 function App() {
 
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
-  const [errors, setErrors] = useState([]);
+  const [pets, setPets] = useState([])
 
   const onLogin=(user) =>  {
     setUser(user);
@@ -21,9 +22,10 @@ function App() {
 
   useEffect(() => {
     getUser()
+    getPet()
   },[])
 
-  function getUser () {
+  const getUser = () =>{
     fetch('/api/auth')
     .then(r => {
       if(r.ok){
@@ -31,6 +33,12 @@ function App() {
         .then(userObj => (setUser(userObj)))
       } 
     })
+  }
+
+  const getPet = () => {
+    fetch('/api/pets')
+      .then(r => r.json())
+      .then(petData => setPets(petData))
   }
 
   const handleLogout = () => {
@@ -77,7 +85,7 @@ function App() {
           <Route
               path="/fundingpage"
               element={
-                <FundingPage user={user} />}
+                <FundingPage user={user} pets={pets} />}
           />
           <Route
           path="/editprofile"
@@ -85,6 +93,16 @@ function App() {
             <EditProfile
             user = {user}
             setUser={setUser}
+            />
+          }
+          />
+          <Route
+          path="/addpaw"
+          element={
+            <AddPaw
+            user = {user}
+            pets = {pets}
+            setPet={setPets}
             />
           }
           />
