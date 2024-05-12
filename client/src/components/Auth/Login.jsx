@@ -3,11 +3,15 @@ import { useNavigate, useLocation} from "react-router-dom";
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import "./Form.css";
+import { loginSession } from "../Redux/Session.jsx";
+import { useDispatch, useSelector } from "react-redux";
 
-const Login = ( {onLogin, user}) => {
+const Login = ( {onLogin, userState}) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [errors, setErrors] = useState([]);
+  const { user } = useSelector((state) => state.session);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (user) {
@@ -41,6 +45,7 @@ const Login = ( {onLogin, user}) => {
         if (response.ok) {
           response.json().then(user => {
             onLogin(user);
+            dispatch(loginSession(user));
             navigate("/fundingpage");
           })
         } else {
