@@ -4,10 +4,13 @@ import { useFormik } from 'formik'
 import * as yup from 'yup'
 import "../Auth/Form.css";
 import { useSelector, useDispatch } from "react-redux";
+import { setPaw } from "../Redux/Paw";
 
-const AddPaw = ({ pets, setPet }) => {
+const AddPaw = () => {
   const navigate = useNavigate();
-  const user = useSelector (state=> state.session);
+  const user = useSelector (state=> state.session.user);
+  const pets = useSelector(state => state.paw.pet);
+  const dispatch = useDispatch();
   const [errors, setErrors] = useState([]);
 
   const formSchema = yup.object().shape({
@@ -26,7 +29,7 @@ const AddPaw = ({ pets, setPet }) => {
         image: '',
         cause: '',
         goal: '',
-        owner_id: user.user.user_id
+        owner_id: user.user_id
       },
 
       validationSchema: formSchema,
@@ -42,7 +45,7 @@ const AddPaw = ({ pets, setPet }) => {
         .then(response => {
           if (response.ok) {
             response.json().then(pet => {
-              setPet([...pets, pet])
+              dispatch(setPaw([...pets, pet]));
               alert(`${pet.name} is added successfully`)
               navigate("/fundingpage");
             })
