@@ -3,15 +3,17 @@ import { useFormik } from 'formik'
 import * as yup from 'yup'
 import { ProgressBar } from 'react-bootstrap';
 import '../FundingPage.css'
-import { useSelector } from "react-redux";
+import { setPaw } from "../../Redux/Paw";
+import { useSelector, useDispatch } from "react-redux";
 
 const PawCard = ({petData}) => {
   const user = useSelector(state => state.session.user);
-  const [errors, setErrors] = useState([]);
+  const pets = useSelector(state => state.paw.pet);
   const [toggle, setToggle] = useState(false);
   const {name, cause, goal, image, age,  id, donations} = petData
   const donationRaised = donations.reduce((accum,donation) => {return accum + donation.amount},0)
-  const [newTotalFund, setNewTotalFund] = useState(donationRaised)
+  const [newTotalFund, setNewTotalFund] = useState(donationRaised);
+  const dispatch = useDispatch();
 
   const handleToggle = (e) => {
     e.preventDefault();
@@ -43,9 +45,20 @@ const PawCard = ({petData}) => {
       })
       .then( r=> r.json())
       .then(donation => {
-        console.log(donation)
         setNewTotalFund(newTotalFund +donation.amount)
         setToggle(!toggle)
+        const newDonations = [...donations, donation]
+        const newPets = []
+        pets.forEach((pet) => {
+          if (pet.id === id) {
+            pet = {...pet};
+            pet.donations = newDonations;
+            newPets.push(pet);
+          } else {
+            newPets.push(pet)
+          }
+        })
+        dispatch(setPaw(newPets));
       }
       )
     }
