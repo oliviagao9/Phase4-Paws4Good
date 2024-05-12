@@ -1,12 +1,16 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useLocation} from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import "./Form.css";
+import { useDispatch, useSelector } from "react-redux";
+import { loginSession, logoutSession } from "../Redux/Session";
 
-const EditProfile = ( {user, setUser}) => {
+const EditProfile = () => {
 
   const navigate = useNavigate();
+  const user = useSelector((state) => state.session);
+  const dispatch = useDispatch();
   const [errors, setErrors] = useState([]);
 
   const handleDelete = () => {
@@ -20,7 +24,7 @@ const EditProfile = ( {user, setUser}) => {
       .then(r => {
           if (r.ok) {
             alert(`user ${user.name} is successfuly deleted`)
-            setUser(null);
+            dispatch(logoutSession(null));
             navigate("/login")
           }
       })
@@ -43,7 +47,7 @@ const EditProfile = ( {user, setUser}) => {
     validationSchema: formSchema,
 
     onSubmit: (values) => {
-      fetch(`/api/users/${user.user_id}`, {
+      fetch(`/api/users/${user.user.user_id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -53,7 +57,7 @@ const EditProfile = ( {user, setUser}) => {
       .then(response => {
         if (response.ok) {
           response.json().then(data => {
-            setUser(data);
+            dispatch(loginSession(data));
             alert('Profile Updated Success')
           })
         } else {
@@ -77,12 +81,12 @@ const EditProfile = ( {user, setUser}) => {
           Name
         </label>
         <p style={{color:'red'}}> {formik.errors.name}</p>
-        <input type='text' name='name' placeholder = {user.name}value={formik.values.name} onChange={formik.handleChange} />
+        <input type='text' name='name' placeholder = {user.name} value={formik.values.name} onChange={formik.handleChange} />
         <label>
           Username
         </label>
         <p style={{color:'red'}}> {formik.errors.username}</p>
-        <input type='text' name='username' placeholder = {user.username}value={formik.values.username} onChange={formik.handleChange} />
+        <input type='text' name='username' placeholder = {user.username} value={formik.values.username} onChange={formik.handleChange} />
         <label>
             Password
         </label>
