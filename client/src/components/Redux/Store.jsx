@@ -1,10 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { combineReducers } from "@reduxjs/toolkit";
+import sessionReducer from "./Session.jsx";
 
-const reducer = combineReducers();
-
-const store = configureStore({
-    reducer
+export default configureStore({
+    reducer: {
+        session: sessionReducer
+    }
 });
-
-export default store;
