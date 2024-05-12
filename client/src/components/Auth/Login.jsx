@@ -14,7 +14,6 @@ const Login = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log(user)
     if (user) {
       navigate("/fundingpage")
     }
