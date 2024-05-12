@@ -3,16 +3,19 @@ import { useNavigate } from "react-router-dom";
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import "./Form.css";
+import { loginSession } from "../Redux/Session.jsx";
+import { useDispatch, useSelector } from "react-redux";
 
-const Signup = ({ onLogin }) => {
+const Signup = () => {
   const navigate = useNavigate();
   const [errors, setErrors] = useState([]);
+  const dispatch = useDispatch();
 
-  const formSchema = yup.object().shape({
+    const formSchema = yup.object().shape({
     name: yup.string().required().max(20),
     username: yup.string().required().max(15),
     password: yup.string().required()
-  })
+    })
 
   const formik = useFormik({
 
@@ -35,7 +38,7 @@ const Signup = ({ onLogin }) => {
         .then(response => {
           if (response.ok) {
             response.json().then(user => {
-              onLogin(user);
+              dispatch(loginSession(user));
               navigate("/fundingpage");
             })
           } else {

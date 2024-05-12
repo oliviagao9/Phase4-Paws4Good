@@ -9,28 +9,31 @@ import { useNavigate } from "react-router-dom";
 import { ProtectedRoute } from "./ProtectedRoute";
 import EditProfile from "./Auth/EditProfile";
 import AddPaw from "./FudningPage/AddPaw";
+import { loginSession } from "./Redux/Session";
+import { useDispatch, useSelector } from "react-redux";
 
 function App() {
 
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
+  const [userState, setUserState] = useState(null);
   const [pets, setPets] = useState([])
-
-  const onLogin=(user) =>  {
-    setUser(user);
-  }
+  const user = useSelector(state => state.session);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     getUser()
     getPet()
-  },[])
+  }, [])
 
   const getUser = () =>{
     fetch('/api/auth')
     .then(r => {
       if(r.ok){
         r.json()
-        .then(userObj => (setUser(userObj)))
+        .then(userObj => {
+              dispatch(loginSession(userObj));
+            }
+        )
       } 
     })
   }
@@ -41,66 +44,39 @@ function App() {
       .then(petData => setPets(petData))
   }
 
-  const handleLogout = () => {
-    fetch('/api/logout', {
-      method: "DELETE",
-      mode: 'cors',
-      credentials: 'include'
-    }).then((r) => {
-        if (r.status === 204) {
-          setUser(null);
-          navigate("/");
-        } else {  r.json().then(data => 
-          alert(data.errors)
-          )
-        }
-    });
-  };
-
   return (
     <div style={{ backgroundColor: "#f4ede4"}}>
-      <NavBar path ={['/', '/signup', '/login']} 
-      user = {user}
-      handleLogout={handleLogout} />     
+      <NavBar path ={['/', '/signup', '/login']} />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route
         path="/login"
         element={
-          <Login
-          onLogin={onLogin}
-          user = {user}
-          />
+          <Login/>
         }
         />
         <Route
         path="/signup"
         element={
-          <Signup
-            onLogin={onLogin}
-          />
+          <Signup/>
         }
         />
-        <Route element = {<ProtectedRoute user = {user}/> }>
+        <Route element = {<ProtectedRoute/> }>
           <Route
               path="/fundingpage"
               element={
-                <FundingPage user={user} pets={pets} />}
+                <FundingPage pets={pets} />}
           />
           <Route
           path="/editprofile"
           element={
-            <EditProfile
-            user = {user}
-            setUser={setUser}
-            />
+            <EditProfile/>
           }
           />
           <Route
           path="/addpaw"
           element={
             <AddPaw
-            user = {user}
             pets = {pets}
             setPet={setPets}
             />

@@ -3,9 +3,10 @@ import { useFormik } from 'formik'
 import * as yup from 'yup'
 import { ProgressBar } from 'react-bootstrap';
 import '../FundingPage.css'
+import { useSelector } from "react-redux";
 
-const PawCard = ({petData , user}) => {
-
+const PawCard = ({petData}) => {
+  const user = useSelector(state => state.session.user);
   const [errors, setErrors] = useState([]);
   const [toggle, setToggle] = useState(false);
   const {name, cause, goal, image, age,  id, donations} = petData

@@ -3,9 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import "../Auth/Form.css";
+import { useSelector, useDispatch } from "react-redux";
 
-const AddPaw = ({user, pets, setPet}) => {
+const AddPaw = ({ pets, setPet }) => {
   const navigate = useNavigate();
+  const user = useSelector (state=> state.session);
   const [errors, setErrors] = useState([]);
 
   const formSchema = yup.object().shape({
@@ -24,7 +26,7 @@ const AddPaw = ({user, pets, setPet}) => {
         image: '',
         cause: '',
         goal: '',
-        owner_id: user.user_id
+        owner_id: user.user.user_id
       },
 
       validationSchema: formSchema,

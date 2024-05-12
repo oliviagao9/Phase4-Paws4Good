@@ -1,16 +1,35 @@
-import { Link } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import "./NavBar.css"
 import { logoutSession } from "../Redux/Session.jsx";
 import { useDispatch, useSelector } from "react-redux";
+import {useEffect} from "react";
 
 const NavBar = () => {
-const user = useSelector((state) => state.session);
-const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const user = useSelector((state) => state.session);
+    const dispatch = useDispatch();
+
+    const handleLogout = () => {
+        fetch('/api/logout', {
+            method: "DELETE",
+            mode: 'cors',
+            credentials: 'include'
+        }).then((r) => {
+            if (r.status === 204) {
+                dispatch(logoutSession(null));
+                navigate("/");
+                console.log(user == null);
+            } else {  r.json().then(data =>
+                alert(data.errors)
+            )
+            }
+        });
+    };
 
   return (
     <div className= "header">
       <div className= "headerLeft">
-        {!user ? (
+        {!user.user ? (
           <Link to ='/' style={{ color: 'black' }}>
             <p>Paws4Good</p>
           </Link>
@@ -21,7 +40,7 @@ const dispatch = useDispatch();
         )}
       </div>
       <div className="headerRight">
-        {!user ? (
+        {!user.user ? (
           <>
             <div className="leftSideLink" style={{ color: 'black' }}>
               <Link to='/login'>Sign In</Link>
@@ -39,7 +58,7 @@ const dispatch = useDispatch();
               <Link to='/editprofile'> Edit Profile</Link>
             </div>
             <div className="rightSideLink"> 
-              <Link to='/' onClick={() => dispatch(logoutSession()) }> Logout</Link>
+              <Link to='/' onClick={() => handleLogout() }> Logout</Link>
             </div>
           </>
         )}

@@ -6,14 +6,15 @@ import "./Form.css";
 import { loginSession } from "../Redux/Session.jsx";
 import { useDispatch, useSelector } from "react-redux";
 
-const Login = ( {onLogin, userState}) => {
+const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [errors, setErrors] = useState([]);
-  const { user } = useSelector((state) => state.session);
+  const user = useSelector((state) => state.session.user);
   const dispatch = useDispatch();
 
   useEffect(() => {
+    console.log(user)
     if (user) {
       navigate("/fundingpage")
     }
@@ -44,7 +45,6 @@ const Login = ( {onLogin, userState}) => {
       .then(response => {
         if (response.ok) {
           response.json().then(user => {
-            onLogin(user);
             dispatch(loginSession(user));
             navigate("/fundingpage");
           })
