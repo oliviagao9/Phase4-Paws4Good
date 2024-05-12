@@ -4,7 +4,7 @@ import { useFormik } from 'formik'
 import * as yup from 'yup'
 import "./Form.css";
 import { loginSession } from "../Redux/Session.jsx";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 const Signup = () => {
   const navigate = useNavigate();
