@@ -1,7 +1,11 @@
 import { Link } from "react-router-dom";
 import "./NavBar.css"
+import { logoutSession } from "../Redux/Session.jsx";
+import { useDispatch, useSelector } from "react-redux";
 
-const NavBar = ( { user,  handleLogout}) => {
+const NavBar = () => {
+const user = useSelector((state) => state.session);
+const dispatch = useDispatch();
 
   return (
     <div className= "header">
@@ -35,7 +39,7 @@ const NavBar = ( { user,  handleLogout}) => {
               <Link to='/editprofile'> Edit Profile</Link>
             </div>
             <div className="rightSideLink"> 
-              <Link to='/' onClick={handleLogout}> Logout</Link>
+              <Link to='/' onClick={() => dispatch(logoutSession()) }> Logout</Link>
             </div>
           </>
         )}
