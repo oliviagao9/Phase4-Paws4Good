@@ -17,8 +17,10 @@ class User(db.Model, SerializerMixin):
   #Relationships
   pets = db.relationship("Pet", back_populates="user", cascade='all, delete-orphan')
   donations = db.relationship("Donation", back_populates="donor", cascade='all, delete-orphan')
+  favorites = db.relationship("Favorite", back_populates="user", cascade='all, delete-orphan')
 
   donated_pets = association_proxy('donations', 'pet')
+  favorite_pets = association_proxy('favorites', 'pet')
   #Serialization 
   serialize_rules = ('-pets.user',)
   
@@ -63,6 +65,7 @@ class Pet(db.Model, SerializerMixin):
   #Relationships
   user = db.relationship('User', back_populates="pets")
   donations = db.relationship("Donation", back_populates="pet", cascade='all, delete-orphan')
+  favorites = db.relationship("Favorite", back_populates="pet", cascade="all, delete-orphan")
 
   @validates('owner_id')
   def validate_owner_id(self, _, value):
@@ -100,3 +103,15 @@ class Donation(db.Model, SerializerMixin):
     if not User.query.filter_by(id = value):
       raise Exception('That donor does not exist.')
     return value
+
+class Favorite(db.Model, SerializerMixin):
+  __tablename__ = "favorites"
+
+  serialize_only = ('id', 'pet_id', 'user_id')
+
+  id = db.Column(db.Integer, primary_key=True)
+  pet_id = db.Column(db.Integer, db.ForeignKey('pets.id'), nullable = False)
+  user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable = False)
+
+  user = db.relationship("User", back_populates="favorites")
+  pet = db.relationship("Pet", back_populates="favorites")
