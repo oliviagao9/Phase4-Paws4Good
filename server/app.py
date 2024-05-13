@@ -10,7 +10,7 @@ from flask_restful import Api, Resource
 from config import app, db, api
 
 # Add your model imports
-from models import User, Pet, Donation
+from models import User, Pet, Donation, Favorite
 
 # Views go here!
 
@@ -230,7 +230,18 @@ class DonationById(Resource):
         except Exception:
             db.session.rollback()
             return make_response({"errors": "Unable to delete donation."}, 400)
-    
+
+class Favorites(Resource):
+    def get(self):
+        try:
+
+            all_favorites = [favorite.to_dict() for favorite in Favorite.query.all()]
+
+            return make_response(all_favorites, 200)
+
+        except Exception:
+            return make_response({"errors": "Unable to fetch favorites."}, 404)
+
 api.add_resource(Users, '/api/users')
 api.add_resource(Pets, '/api/pets')
 api.add_resource(PetById, '/api/petbyid/<int:id>')
@@ -241,6 +252,7 @@ api.add_resource(Login, '/api/login')
 api.add_resource(Logout, '/api/logout')
 api.add_resource(Auth, '/api/auth')
 api.add_resource(UserByID, "/api/users/<int:id>")
+api.add_resource(Favorites, '/api/favorites')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
