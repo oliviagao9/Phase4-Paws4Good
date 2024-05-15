@@ -9,13 +9,14 @@ from faker import Faker
 # Local imports
 from app import app
 from config import db
-from models import User, Pet, Donation
+from models import User, Pet, Donation, Favorite
 
 if __name__ == '__main__':
     with app.app_context():
         User.query.delete()
         Pet.query.delete()
         Donation.query.delete()
+        Favorite.query.delete()
 
         u1 = User (name = "Tom", username = "Tom2006", _password_hash = "")
         u1.password_hash = "abcd"
@@ -44,5 +45,11 @@ if __name__ == '__main__':
         d2 = Donation (amount = 150, pet_id = 2, donor_id = 1)
         db.session.add_all([d1, d2])
         db.session.commit()
+
+        f1 = Favorite (pet_id = 1, user_id= 1)
+        f2 = Favorite (pet_id = 2, user_id= 3)
+        db.session.add_all([f1, f2])
+        db.session.commit()
+
         print('seed data completed')
 
