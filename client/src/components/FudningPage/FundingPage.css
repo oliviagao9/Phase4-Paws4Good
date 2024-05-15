@@ -38,6 +38,14 @@ button {
   margin: 1rem;
 }
 
+.fav-button{
+  background-color: white;
+}
+
+.not-fav-button{
+  background-color: white;
+}
+
 @media (min-width: 768px) {
   .cards {
     display: flex;

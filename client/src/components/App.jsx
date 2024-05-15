@@ -39,6 +39,7 @@ function App() {
     fetch('/api/pets')
       .then(r => r.json())
       .then(petData => {
+          console.log(petData);
           dispatch(setPaw(petData));
     });
   }
