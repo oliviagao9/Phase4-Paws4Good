@@ -242,6 +242,38 @@ class Favorites(Resource):
         except Exception:
             return make_response({"errors": "Unable to fetch favorites."}, 404)
 
+    def post(self):
+        try:
+            body = request.get_json()
+            new_favorite = Favorite(**body)
+            db.session.add(new_favorite)
+            db.session.commit()
+            return make_response(new_favorite.to_dict(), 201)
+
+        except Exception:
+            db.session.rollback()
+            return make_response({"errors": "Unable to create favorite."}, 400)
+
+class FavoriteById(Resource):
+    def get(self, id):
+        try:
+            target = db.session.get(Favorite, id)
+            return make_response(target.to_dict(), 200)
+
+        except Exception:
+            return make_response({}, 404)
+
+    def delete(self, id):
+        try:
+            target = db.session.get(Favorite, id)
+            db.session.delete(target)
+            db.session.commit()
+            return make_response({}, 204)
+
+        except Exception:
+            db.session.rollback()
+            return make_response({"errors": "Unable to delete favorite."}, 400)
+
 api.add_resource(Users, '/api/users')
 api.add_resource(Pets, '/api/pets')
 api.add_resource(PetById, '/api/petbyid/<int:id>')
@@ -253,6 +285,7 @@ api.add_resource(Logout, '/api/logout')
 api.add_resource(Auth, '/api/auth')
 api.add_resource(UserByID, "/api/users/<int:id>")
 api.add_resource(Favorites, '/api/favorites')
+api.add_resource(FavoriteById, "/api/favorites/<int:id>")
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
